@@ -1,0 +1,34 @@
+<div class="jumbotron">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <h3>Add New Movie To Database!</h3>
+        <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+          <div class="form-group">
+            <label for="movieName">Movie Name</label>
+            <input type="text" class="form-control" name="movieName" [(ngModel)]="model.movieName" #movieName="ngModel" [ngClass]="{ 'is-invalid': f.submitted && movieName.invalid }" required />
+            <div *ngIf="f.submitted && movieName.invalid" class="invalid-feedback">
+              <div *ngIf="movieName.errors.required">Movie Name is required</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="year">Year</label>
+            <input type="number" class="form-control" name="year" [(ngModel)]="model.year" #year="ngModel" [ngClass]="{ 'is-invalid': f.submitted && year.invalid }" required />
+            <div *ngIf="f.submitted && year.invalid" class="invalid-feedback">
+              <div *ngIf="year.errors.required">year is required</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="genre">Genre</label>
+            <select class="form-control" id="genre" name="genre" [(ngModel)]="model.genre" required>
+              <option *ngFor="let genre of genres" [value]="genre">{{genre}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary">Add</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

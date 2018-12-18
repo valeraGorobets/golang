@@ -1,6 +1,3 @@
-<h1>
-  {{title}}
-  <button (click)="getVideo()">getVideo</button>
-  <button (click)="addNewMovie()">addNewMovie</button>
-  <movie-card-container></movie-card-container>
-</h1>
+<header-with-nav></header-with-nav>
+<adding-new-movie (moviesListChanged)="onMoviesChanged($event)"></adding-new-movie>
+<movie-card-container [cardData]="cardData"></movie-card-container>
