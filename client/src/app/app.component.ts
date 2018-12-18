@@ -1,42 +1,36 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import {Component, OnInit} from '@angular/core';
+import { MoviesService } from './services/movies.service';
 
 @Component({
 	selector: 'app-root',
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-	public title = 'Hello world!';
+export class AppComponent implements OnInit {
 
+	public cardData = [];
 	constructor(
-		private http: HttpClient,
-	) {}
+		private moviesService: MoviesService,
+	) { }
 
-	addNewMovie(): void {
-		this.addNewMovieService().subscribe((result: any) => {
-			console.log(result);
+	ngOnInit() {
+		this.updateMovies();
+	}
+
+	public onMoviesChanged(event: any) {
+		if (event) {
+			this.updateMovies();
+		} else {
+			alert('Smt went wrong ((');
+		}
+	}
+
+	private updateMovies(): void {
+		this.moviesService.getAllMovies().subscribe(data => {
+			this.cardData = data.Database
+				.map(d => typeof d === 'string' ? JSON.parse(d) : d)
+				.reverse();
+			console.log(this.cardData);
 		});
-	}
-
-	addNewMovieService(): Observable<any> {
-		return this.http.post('/addNewMovie', {
-			'name': 'Movie' + Date.now(),
-			'year': 2018,
-			'genre': 'Action'
-		});
-	}
-
-	getVideo(): void {
-		this.getVideoService()
-			.subscribe((result: any) => {
-				console.log(result);
-				this.title = result.Name;
-			});
-	}
-
-	getVideoService(): Observable<any> {
-		return this.http.get('/video');
 	}
 }

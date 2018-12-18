@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -24,7 +25,7 @@ type movieType struct {
 
 func main() {
 	r := mux.NewRouter()
-	// r.HandleFunc("/video", getAllMoviesWithInfo)
+	r.HandleFunc("/allMoviesWithInfo", getAllMoviesWithInfo)
 	// r.HandleFunc("/video", getMoviesNames)
 	// r.HandleFunc("/video/{id}", getMovieInfo)
 	r.HandleFunc("/addNewMovie", addNewMovie)
@@ -32,23 +33,24 @@ func main() {
 	log.Fatal(http.ListenAndServe(":3000", r))
 }
 
-func getAllMoviesWithInfo(w http.ResponseWriter, r *http.Request) {
+func getFile() []byte {
 	file, e := ioutil.ReadFile("./movies.json")
 	if e != nil {
 		fmt.Printf("File error: %v\n", e)
 		os.Exit(1)
 	}
+	return file
+}
+
+func getAllMoviesWithInfo(w http.ResponseWriter, r *http.Request) {
+	file := getFile()
 	// fmt.Printf("%s\n", string(file))
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(file)
 }
 
 func getMoviesNames(w http.ResponseWriter, r *http.Request) {
-	file, e := ioutil.ReadFile("./movies.json")
-	if e != nil {
-		fmt.Printf("File error: %v\n", e)
-		os.Exit(1)
-	}
+	file := getFile()
 
 	value := gjson.Get(string(file), "Database.#.name")
 
@@ -57,11 +59,8 @@ func getMoviesNames(w http.ResponseWriter, r *http.Request) {
 }
 
 func getMovieInfo(w http.ResponseWriter, r *http.Request) {
-	file, e := ioutil.ReadFile("./movies.json")
-	if e != nil {
-		fmt.Printf("File error: %v\n", e)
-		os.Exit(1)
-	}
+	file := getFile()
+
 	value := gjson.Get(string(file), "Database.#[id=="+mux.Vars(r)["id"]+"]")
 
 	w.Header().Set("Content-Type", "application/json")
@@ -70,11 +69,20 @@ func getMovieInfo(w http.ResponseWriter, r *http.Request) {
 
 func addNewMovie(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Added new Movie")
-	var m movieType
+	file := getFile()
+
+	// var m movieType
 	b, _ := ioutil.ReadAll(r.Body)
-	json.Unmarshal(b, &m)
-	fmt.Printf(string(b))
-	j, _ := json.Marshal(m)
-	fmt.Printf(string(j))
-	w.Write(j)
+	json.Marshal(b)
+	println(b)
+
+	value, _ := sjson.Set(string(file), "Database.-1", b)
+	println(value)
+
+	e := ioutil.WriteFile("./movies.json", []byte(value), 0644)
+	if e != nil {
+		w.Write([]byte("Appending faild"))
+		os.Exit(1)
+	}
+	getAllMoviesWithInfo(w, r)
 }
