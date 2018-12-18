@@ -22,9 +22,11 @@ export class AppComponent {
 
 	addNewMovieService(): Observable<any> {
 		return this.http.post('/addNewMovie', {
+      'id': Date.now(),
 			'name': 'Movie' + Date.now(),
 			'year': 2018,
-			'genre': 'Action'
+			'genre': 'Action',
+      'about': '',
 		});
 	}
 

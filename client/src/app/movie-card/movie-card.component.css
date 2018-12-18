@@ -1,0 +1,37 @@
+.card {
+  display: inline-block;
+  margin: 50px;
+  height: 100px;
+  width: 200px;
+  /*background-image: linear-gradient(-60deg, #ff5858 0%, #f09819 100%);*/
+  border:1px solid black;
+  cursor: pointer;
+}
+
+.info {
+  visibility: hidden;
+  top: 30px;
+  position: relative;
+  background: red;
+  height: 500px;
+  width: 300px;
+}
+
+.card:hover .info {
+  visibility: visible;
+}
+
+.info:after {
+  bottom: 100%;
+  left: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(255, 255, 255, 0);
+  border-bottom-color: red;
+  border-width: 15px;
+  margin-left: -15px;
+}
