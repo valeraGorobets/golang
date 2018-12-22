@@ -26,8 +26,8 @@ type movieType struct {
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/allMoviesWithInfo", getAllMoviesWithInfo)
-	// r.HandleFunc("/video", getMoviesNames)
-	// r.HandleFunc("/video/{id}", getMovieInfo)
+	r.HandleFunc("/movie", getMoviesNames)
+	r.HandleFunc("/movie/{id}", getMovieInfo)
 	r.HandleFunc("/addNewMovie", addNewMovie)
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./client/dist")))
 	log.Fatal(http.ListenAndServe(":3000", r))
@@ -44,37 +44,28 @@ func getFile() []byte {
 
 func getAllMoviesWithInfo(w http.ResponseWriter, r *http.Request) {
 	file := getFile()
-	// fmt.Printf("%s\n", string(file))
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(file)
 }
 
 func getMoviesNames(w http.ResponseWriter, r *http.Request) {
 	file := getFile()
-
 	value := gjson.Get(string(file), "Database.#.name")
-
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(value.String()))
 }
 
 func getMovieInfo(w http.ResponseWriter, r *http.Request) {
 	file := getFile()
-
 	value := gjson.Get(string(file), "Database.#[id=="+mux.Vars(r)["id"]+"]")
-
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(value.String()))
 }
 
 func addNewMovie(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("Added new Movie")
 	file := getFile()
-
-	// var m movieType
 	b, _ := ioutil.ReadAll(r.Body)
 	json.Marshal(b)
-	println(b)
 
 	value, _ := sjson.Set(string(file), "Database.-1", b)
 	println(value)
