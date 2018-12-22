@@ -26,7 +26,7 @@ type movieType struct {
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/allMoviesWithInfo", getAllMoviesWithInfo)
-	r.HandleFunc("/movie", getMoviesNames)
+	r.HandleFunc("/movieNames", getMoviesNames)
 	r.HandleFunc("/movie/{id}", getMovieInfo)
 	r.HandleFunc("/addNewMovie", addNewMovie)
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./client/dist")))
