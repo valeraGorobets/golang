@@ -5,6 +5,17 @@
   width: 400px;
   background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
   cursor: pointer;
+  overflow: hidden;
+}
+
+.wrapper {
+	position: absolute;
+  width: 100%;
+  transition: transform 0.5s;
+}
+
+.wrapper:hover {
+  transform: translateY(-135px);
 }
 
 img {
@@ -16,5 +27,5 @@ p {
   margin-left: 30px;
   font-size: 32px;
   font-weight: bold;
-
+  margin-top: 20px;
 }
